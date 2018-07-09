@@ -12,20 +12,25 @@ import csv
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
-chosenDirectory = sys.argv[1]
+dirToEsportsVideos = sys.argv[1]
+chosenDirectory = sys.argv[2]
 
-if not os.path.exists('esports_videos_comments'):
-    os.mkdir('esports_videos_comments')
+
+if not os.path.exists(os.path.dirname(dirToEsportsVideos+'/esports_videos/')):
+    os.makedirs(os.path.dirname(dirToEsportsVideos+'/esports_videos/'))
+
+if not os.path.exists(chosenDirectory+'esports_videos_comments'):
+    os.makedirs(chosenDirectory+'esports_videos_comments')
 
 # write separate file for this! Needs to be self populated
 # channels = ['playhearthstone', 'overwatchleague']
-with open(chosenDirectory+'/esports_channels.csv') as games_list:
+with open('esports_channels.csv') as games_list:
     reader = csv.reader(games_list)
     channels = [r[0] for r in reader]
     channels.pop(0)
 
 for channel in channels:
-    details = pd.read_csv(chosenDirectory+'/esports_videos/' + channel + "_videos_details.csv", index_col = 0)
+    details = pd.read_csv(dirToEsportsVideos+'/esports_videos/' + channel + "_videos_details.csv", index_col = 0)
 
     # Get top x most views of each channel
     # x = 10

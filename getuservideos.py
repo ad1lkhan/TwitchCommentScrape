@@ -14,13 +14,13 @@ cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
 chosenDirectory = sys.argv[1]
 
 # Access list of games (this is made manually)
-with open(chosenDirectory+'/games.csv') as games_list:
+with open('games.csv') as games_list:
     reader = csv.reader(games_list)
     games = [r[0] for r in reader]
     games.pop(0)
 
 # Access list of users
-with open(chosenDirectory+'/streamers.csv') as channel_list:
+with open('streamers.csv') as channel_list:
     reader = csv.reader(channel_list)
     streamers = [r[0] for r in reader]
     streamers.pop(0)
@@ -30,8 +30,8 @@ with open(chosenDirectory+'/streamers.csv') as channel_list:
 # f = open(file_name, "w")
 # users_info = []
 
-if not os.path.exists('user_videos'):
-    os.mkdir('user_videos')
+if not os.path.exists(chosenDirectory+'/user_videos'):
+    os.makedirs(chosenDirectory+'/user_videos')
 
 df1 = DataFrame()
 for user in streamers:

@@ -7,27 +7,28 @@ import json
 import sys
 import time
 import os
+import errno
 
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
-chosenDirectory = sys.argv[1]
-
-# Gears of war (few 100 viewers): Results of individual comments
-# 270200238 = 6229
-# 271216023 = 3531
-
-# Where this ids list has been preprocessed in the previous step. Where the DF has been sorted wrt the streamer
-# and the game. Thus IDs list will only contain the ids for the same streamer and that particular game
+dirToUserVideos = sys.argv[1]
+chosenDirectory = sys.argv[2]
 
 
-details = pd.read_csv(chosenDirectory+'/user_videos/users_videos_details.csv', index_col = 0)
+if not os.path.exists(os.path.dirname(dirToUserVideos+'/user_videos/')):
+    os.makedirs(os.path.dirname(dirToUserVideos+'/user_videos/'))
+
+if not os.path.exists(chosenDirectory+"/user_videos_comments/"):
+    os.makedirs(chosenDirectory+"/user_videos_comments/")
+
+
+details = pd.read_csv(dirToUserVideos+'/user_videos/users_videos_details.csv', index_col = 0)
 print(details)
 
 grouped = details.groupby(['name','game'])
 
-if not os.path.exists('user_videos_comments'):
-    os.mkdir("user_videos_comments")
+
 
 for name, group in grouped:
     ids  = group['vid'].tolist()

@@ -6,18 +6,19 @@ import json
 import os
 import csv
 import datetime
+import sys
 
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
 chosenDirectory = sys.argv[1]
 
 # Access list of games (this is made manually)
-with open(chosenDirectory+'/games.csv') as games_list:
+with open('games.csv') as games_list:
     reader = csv.reader(games_list)
     games = [r[0] for r in reader]
     games.pop(0)
 
 # Open self-populated csv file with tournamnet channels
-with open(chosenDirectory+'/esports_channels.csv') as channel_list:
+with open('esports_channels.csv') as channel_list:
     reader = csv.reader(channel_list)
     channels = [r[0] for r in reader]
     channels.pop(0)
@@ -27,8 +28,8 @@ with open(chosenDirectory+'/esports_channels.csv') as channel_list:
 # file_name = "channel_videos" + ".json"
 # f = open(file_name, "w")
 
-if not os.path.exists('esports_videos'):
-    os.mkdir('esports_videos')
+if not os.path.exists(chosenDirectory+'/esports_videos'):
+    os.makedirs(chosenDirectory+'/esports_videos')
 
 for channel in channels:
 
