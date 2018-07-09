@@ -11,6 +11,7 @@ import os
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+chosenDirectory = sys.argv[1]
 
 # Gears of war (few 100 viewers): Results of individual comments
 # 270200238 = 6229
@@ -20,7 +21,7 @@ cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
 # and the game. Thus IDs list will only contain the ids for the same streamer and that particular game
 
 
-details = pd.read_csv('/Users/adil/Documents/Project/user_videos/users_videos_details.csv', index_col = 0)
+details = pd.read_csv(chosenDirectory+'/user_videos/users_videos_details.csv', index_col = 0)
 print(details)
 
 grouped = details.groupby(['name','game'])
@@ -62,7 +63,7 @@ for name, group in grouped:
                     # messages += response["comments"]
                     for item in response["comments"]:
                         if (item.get('message') != None and item.get('message') != ''):
-                            vid.append(item.get('content_id')) 
+                            vid.append(item.get('content_id'))
                             commenter.append(item.get('commenter').get('display_name'))
                             time_stamp.append(item.get('created_at'))
                             comment_list.append(item.get('message').get('body'))
@@ -76,11 +77,11 @@ for name, group in grouped:
 
                     if i < CHUNK_ATTEMPTS - 1:
                         time.sleep(CHUNK_ATTEMPT_SLEEP)
-            # time taken for this loop to execute                            
+            # time taken for this loop to execute
             # print("time taken to execute loop took ", time.time() - start_time)
             if error != None:
                 sys.exit("max retries exceeded.")
-                
+
     #f.write(json.dumps(messages))
     #f.close()
     # print()
@@ -95,4 +96,4 @@ for name, group in grouped:
     df2 = DataFrame(data = dic2)
     df2 = df2.append(df2)
     df2.drop_duplicates(subset = None, inplace = True)
-    df2.to_csv("/Users/adil/Documents/Project/user_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) + "_comments.csv", sep=',')
+    df2.to_csv(chosenDirectory+"/user_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) + "_comments.csv", sep=',')

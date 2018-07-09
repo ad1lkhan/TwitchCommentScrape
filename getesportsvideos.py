@@ -8,16 +8,17 @@ import csv
 import datetime
 
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+chosenDirectory = sys.argv[1]
 
 # Access list of games (this is made manually)
-with open('/Users/adil/Documents/Project/games.csv') as games_list:
-    reader = csv.reader(games_list) 
+with open(chosenDirectory+'/games.csv') as games_list:
+    reader = csv.reader(games_list)
     games = [r[0] for r in reader]
     games.pop(0)
 
 # Open self-populated csv file with tournamnet channels
-with open('/Users/adil/Documents/Project/esports_channels.csv') as channel_list:
-    reader = csv.reader(channel_list) 
+with open(chosenDirectory+'/esports_channels.csv') as channel_list:
+    reader = csv.reader(channel_list)
     channels = [r[0] for r in reader]
     channels.pop(0)
 
@@ -38,13 +39,13 @@ for channel in channels:
     title = []
     duration = []
     views = []
-    
+
     for x in range(0,5000, 100):
         vod_info = requests.get("https://api.twitch.tv/kraken/channels/" + channel + "/videos?limit=100&offset=" + str(x) + "&broadcast_type=archive,highlight", headers={"Client-ID": cid}).json()
         # channel_videos.append(vod_info)
-        
+
         for info in vod_info.get('videos'):
-            if info.get('game') in games and info.get('length') > 2700 and info.get('views') > 99:  # in seconds 2700s = 45min 
+            if info.get('game') in games and info.get('length') > 2700 and info.get('views') > 99:  # in seconds 2700s = 45min
                 url = info.get('url')
                 vid.append(url[url.rfind('/')+1:])
                 name.append(info.get('channel').get('name'))
@@ -54,7 +55,7 @@ for channel in channels:
                 time = info.get('length')
                 duration.append(str(datetime.timedelta(seconds=time)))
                 views.append(info.get('views'))
-            
+
     dic = {}
     dic['vid'] = vid
     dic['name'] = name
@@ -67,4 +68,4 @@ for channel in channels:
     df2 = DataFrame(data = dic)
     df2 = df2.append(df2)
     df2.drop_duplicates(subset = None, inplace = True)
-    df2.to_csv("/Users/adil/Documents/Project/esports_videos/" + channel + "_videos_details.csv", sep=',')
+    df2.to_csv(chosenDirectory+"/esports_videos/" + channel + "_videos_details.csv", sep=',')

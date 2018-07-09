@@ -11,16 +11,17 @@ import csv
 import os
 
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+chosenDirectory = sys.argv[1]
 
 # Access list of games (this is made manually)
-with open('/Users/adil/Documents/Project/games.csv') as games_list:
-    reader = csv.reader(games_list) 
+with open(chosenDirectory+'/games.csv') as games_list:
+    reader = csv.reader(games_list)
     games = [r[0] for r in reader]
     games.pop(0)
 
-# Access list of users 
-with open('/Users/adil/Documents/Project/streamers.csv') as channel_list:
-    reader = csv.reader(channel_list) 
+# Access list of users
+with open(chosenDirectory+'/streamers.csv') as channel_list:
+    reader = csv.reader(channel_list)
     streamers = [r[0] for r in reader]
     streamers.pop(0)
 
@@ -46,9 +47,9 @@ for user in streamers:
     for x in range(0, 1000, 100):
         vod_info = requests.get("https://api.twitch.tv/kraken/channels/" + user + "/videos?limit=100&offset=" + str(x) + "&broadcast_type=archive,highlight", headers={"Client-ID": cid}).json()
         # users_info.append(vod_info)  # we store the vod metadata in the first element of the message array
-  
+
         for info in vod_info.get('videos'):
-            if info.get('game') in games and info.get('length') > 2700 and info.get('views') > 99: 
+            if info.get('game') in games and info.get('length') > 2700 and info.get('views') > 99:
                 url = info.get('url')
                 vid.append(url[url.rfind('/')+1:])
                 name.append(info.get('channel').get('name'))
@@ -77,7 +78,7 @@ for user in streamers:
 
 df1 = df1.sort_values(['name', 'game'], ascending=[1, 0])
 df1.drop_duplicates(subset = None, inplace = True)
-df1.to_csv("/Users/adil/Documents/Project/user_videos/users_videos_details.csv", sep=',')
+df1.to_csv(chosenDirectory+"/user_videos/users_videos_details.csv", sep=',')
 
 # print()
 # print("saving to " + file_name)

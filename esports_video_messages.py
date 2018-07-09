@@ -7,30 +7,31 @@ import json
 import sys
 import time
 import os
-import csv 
+import csv
 
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
 cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+chosenDirectory = sys.argv[1]
 
 if not os.path.exists('esports_videos_comments'):
     os.mkdir('esports_videos_comments')
 
-# write separate file for this! Needs to be self populated 
+# write separate file for this! Needs to be self populated
 # channels = ['playhearthstone', 'overwatchleague']
-with open('/Users/adil/Documents/Project/esports_channels.csv') as games_list:
-    reader = csv.reader(games_list) 
+with open(chosenDirectory+'/esports_channels.csv') as games_list:
+    reader = csv.reader(games_list)
     channels = [r[0] for r in reader]
     channels.pop(0)
 
-for channel in channels:                                
-    details = pd.read_csv('/Users/adil/Documents/Project/esports_videos/' + channel + "_videos_details.csv", index_col = 0)
-    
+for channel in channels:
+    details = pd.read_csv(chosenDirectory+'/esports_videos/' + channel + "_videos_details.csv", index_col = 0)
+
     # Get top x most views of each channel
-    # x = 10 
+    # x = 10
     # details = details.sort_values('views', ascending = False).head(x)
     # print(details)
-    grouped = details.groupby(['name','game']) # added, experimenting 
+    grouped = details.groupby(['name','game']) # added, experimenting
 
     for name, group in grouped:
         ids  = group['vid'].tolist()
@@ -66,7 +67,7 @@ for channel in channels:
                         # messages += response["comments"]
                         for item in response["comments"]:
                             if (item.get('message') != None and item.get('message') != ''):
-                                vid.append(item.get('content_id')) 
+                                vid.append(item.get('content_id'))
                                 commenter.append(item.get('commenter').get('display_name'))
                                 time_stamp.append(item.get('created_at'))
                                 comment_list.append(item.get('message').get('body'))
@@ -80,11 +81,11 @@ for channel in channels:
 
                         if i < CHUNK_ATTEMPTS - 1:
                             time.sleep(CHUNK_ATTEMPT_SLEEP)
-                # time taken for this loop to execute                            
+                # time taken for this loop to execute
                 # print("time taken to execute loop took ", time.time() - start_time)
                 if error != None:
                     sys.exit("max retries exceeded.")
-                    
+
         # f.write(json.dumps(messages))
         # f.close()
         # print()
@@ -99,8 +100,8 @@ for channel in channels:
         df2 = DataFrame(data = dic2)
         df2 = df2.append(df2)
         df2.drop_duplicates(subset = None, inplace = True)
-        df2.to_csv("/Users/adil/Documents/Project/esports_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) +  "_comments.csv", sep=',')
+        df2.to_csv(chosenDirectory+"/esports_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) +  "_comments.csv", sep=',')
 
         # Save for each channel
         # df = DataFrame(data = details)
-        # df.to_csv("/Users/adil/Documents/Project/channel_comments/" + channel + "_most_viewes.csv")
+        # df.to_csv(chosenDirectory+"/channel_comments/" + channel + "_most_viewes.csv")
