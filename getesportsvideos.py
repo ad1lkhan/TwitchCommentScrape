@@ -8,8 +8,8 @@ import csv
 import datetime
 import sys
 
-cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
-chosenDirectory = sys.argv[1]
+cid = "2yrsl4jc6lt9vnzj1j7oc8f7qdlrp8"
+chosenDirectory = '/Users/adil/Documents/Project/Crawler/'
 
 # Access list of games (this is made manually)
 with open('games.csv') as games_list:
@@ -53,8 +53,9 @@ for channel in channels:
                 game.append(info.get('game'))
                 created.append(info.get('created_at'))
                 title.append(info.get('title'))
-                time = info.get('length')
-                duration.append(str(datetime.timedelta(seconds=time)))
+                duration.append(info.get('length'))
+                # time = info.get('length')
+                # duration.append(str(datetime.timedelta(seconds=time)))
                 views.append(info.get('views'))
 
     dic = {}

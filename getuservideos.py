@@ -10,7 +10,8 @@ import datetime
 import csv
 import os
 
-cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+cid = "2yrsl4jc6lt9vnzj1j7oc8f7qdlrp8"
+
 chosenDirectory = sys.argv[1]
 
 # Access list of games (this is made manually)
@@ -56,8 +57,9 @@ for user in streamers:
                 game.append(info.get('game'))
                 created.append(info.get('created_at'))
                 title.append(info.get('title'))
-                time = info.get('length')
-                duration.append(str(datetime.timedelta(seconds=time)))
+                duration.append(info.get('length'))
+                # time = info.get('length')
+                # duration.append(str(datetime.timedelta(seconds=time)))
                 views.append(info.get('views'))
 
         dic = {}

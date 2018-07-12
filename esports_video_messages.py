@@ -11,7 +11,8 @@ import csv
 
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
-cid = "isaxc3wjcarzh4vgvz11cslcthw0gw"
+
+cid = "2yrsl4jc6lt9vnzj1j7oc8f7qdlrp8"
 dirToEsportsVideos = sys.argv[1]
 chosenDirectory = sys.argv[2]
 
