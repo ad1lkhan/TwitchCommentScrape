@@ -8,6 +8,7 @@ import sys
 import time
 import os
 import errno
+import datetime
 
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
@@ -40,62 +41,65 @@ for name, group in grouped:
     time_stamp = []
     comment_list = []
 
-    for num in ids:
-        vod_info = requests.get("https://api.twitch.tv/kraken/videos/v/" + str(num), headers={"Client-ID": cid}).json()
+    try:
+        for num in ids:
+            vod_info = requests.get("https://api.twitch.tv/kraken/videos/v/" + str(num), headers={"Client-ID": cid}).json()
 
-        response = None
-        print("downloading chat messages for vod " + str(num))# + game + ',' + num)
-        while response == None or '_next' in response:
-            query = ('cursor=' + response['_next']) if response != None and '_next' in response else 'content_offset_seconds=0'
-            for i in range(0, CHUNK_ATTEMPTS):
-                error = None
-                try:
-                    # start_time = time.time() # time this loop starts
-                    time.sleep(1) # time delay in seconds
-                    response = requests.get("https://api.twitch.tv/v5/videos/" + str(num) + "/comments?" + query,
-                                            headers={"Client-ID": cid}).json()
-                except requests.exceptions.ConnectionError as e:
-                    error = str(e)
-                else:
-                    if "errors" in response or not "comments" in response:
-                        error = "error received in chat message response: " + str(response)
+            response = None
+            print(str(datetime.datetime.now())+": downloading chat messages for vod " + str(num))# + game + ',' + num)
+            while response == None or '_next' in response:
+                query = ('cursor=' + response['_next']) if response != None and '_next' in response else 'content_offset_seconds=0'
+                for i in range(0, CHUNK_ATTEMPTS):
+                    error = None
+                    try:
+                        # start_time = time.time() # time this loop starts
+                        time.sleep(1) # time delay in seconds
+                        response = requests.get("https://api.twitch.tv/v5/videos/" + str(num) + "/comments?" + query,
+                                                headers={"Client-ID": cid}).json()
+                    except requests.exceptions.ConnectionError as e:
+                        error = str(e)
+                    else:
+                        if "errors" in response or not "comments" in response:
+                            error = "error received in chat message response: " + str(response)
 
-                if error == None:
-                    # The original only had the next line! Additional lines added before next else statement
-                    # messages += response["comments"]
-                    for item in response["comments"]:
-                        if (item.get('message') != None and item.get('message') != ''):
-                            vid.append(item.get('content_id'))
-                            commenter.append(item.get('commenter').get('display_name'))
-                            time_stamp.append(item.get('created_at'))
-                            comment_list.append(item.get('message').get('body'))
-                    break
-                else:
-                    print("\nerror while downloading chunk: " + error)
+                    if error == None:
+                        # The original only had the next line! Additional lines added before next else statement
+                        # messages += response["comments"]
+                        for item in response["comments"]:
+                            if (item.get('message') != None and item.get('message') != ''):
+                                vid.append(item.get('content_id'))
+                                commenter.append(item.get('commenter').get('display_name'))
+                                time_stamp.append(item.get('created_at'))
+                                comment_list.append(item.get('message').get('body'))
+                        break
+                    else:
+                        print("\nerror while downloading chunk: " + error)
 
-                    if i < CHUNK_ATTEMPTS - 1:
-                        print("retrying in " + str(CHUNK_ATTEMPT_SLEEP) + " seconds ", end="")
-                    print("(attempt " + str(i + 1) + "/" + str(CHUNK_ATTEMPTS) + ")")
+                        if i < CHUNK_ATTEMPTS - 1:
+                            print("retrying in " + str(CHUNK_ATTEMPT_SLEEP) + " seconds ", end="")
+                        print("(attempt " + str(i + 1) + "/" + str(CHUNK_ATTEMPTS) + ")")
 
-                    if i < CHUNK_ATTEMPTS - 1:
-                        time.sleep(CHUNK_ATTEMPT_SLEEP)
-            # time taken for this loop to execute
-            # print("time taken to execute loop took ", time.time() - start_time)
-            if error != None:
-                sys.exit("max retries exceeded.")
+                        if i < CHUNK_ATTEMPTS - 1:
+                            time.sleep(CHUNK_ATTEMPT_SLEEP)
+                # time taken for this loop to execute
+                # print("time taken to execute loop took ", time.time() - start_time)
+                if error != None:
+                    sys.exit("max retries exceeded.")
 
-    #f.write(json.dumps(messages))
-    #f.close()
-    # print()
-    # print("saving to " + file_name)
-    # print("done2!")
+        #f.write(json.dumps(messages))
+        #f.close()
+        # print()
+        # print("saving to " + file_name)
+        # print("done2!")
 
-    dic2['vid'] = vid
-    dic2['commenter'] = commenter
-    dic2['time'] = time_stamp
-    dic2['comment'] = comment_list
+        dic2['vid'] = vid
+        dic2['commenter'] = commenter
+        dic2['time'] = time_stamp
+        dic2['comment'] = comment_list
 
-    df2 = DataFrame(data = dic2)
-    df2 = df2.append(df2)
-    df2.drop_duplicates(subset = None, inplace = True)
-    df2.to_csv(chosenDirectory+"/user_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) + "_comments.csv", sep=',')
+        df2 = DataFrame(data = dic2)
+        df2 = df2.append(df2)
+        df2.drop_duplicates(subset = None, inplace = True)
+        df2.to_csv(chosenDirectory+"/user_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) + "_comments.csv", sep=',')
+    except:
+        print(str(datetime.datetime.now())+": Video broken or something")
