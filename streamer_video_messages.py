@@ -8,7 +8,6 @@ import sys
 import time
 import os
 import errno
-import datetime
 
 CHUNK_ATTEMPTS = 6
 CHUNK_ATTEMPT_SLEEP = 10
@@ -46,7 +45,7 @@ for name, group in grouped:
             vod_info = requests.get("https://api.twitch.tv/kraken/videos/v/" + str(num), headers={"Client-ID": cid}).json()
 
             response = None
-            print(str(datetime.datetime.now())+": downloading chat messages for vod " + str(num))# + game + ',' + num)
+            print("downloading chat messages for vod " + str(num))# + game + ',' + num)
             while response == None or '_next' in response:
                 query = ('cursor=' + response['_next']) if response != None and '_next' in response else 'content_offset_seconds=0'
                 for i in range(0, CHUNK_ATTEMPTS):
@@ -101,5 +100,3 @@ for name, group in grouped:
         df2 = df2.append(df2)
         df2.drop_duplicates(subset = None, inplace = True)
         df2.to_csv(chosenDirectory+"/user_videos_comments/" + name[0] + "_" + name[1] + "_" + str(time.time()) + "_comments.csv", sep=',')
-    except:
-        print(str(datetime.datetime.now())+": Video broken or something")
