@@ -96,7 +96,7 @@ def save(row):
         #df2.to_csv(chosenDirectory+"/user_videos_comments/" + str(vid) +"_comments.csv", sep=',')
         df2.to_csv(chosenDirectory+"/user_videos_comments/" + str(vid) + "_" + str(name) + "_" + str(game)+ "_comments.csv", sep=',')
     except:
-        print(str(datetime.datetime.now())+" -- "+row+ ": Video broken or dropped adding to csv")
+        print(str(datetime.datetime.now())+" -- "+vid+ ": Video broken or dropped adding to csv")
 
 
 
