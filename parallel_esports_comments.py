@@ -82,11 +82,11 @@ def save(row):
         #f.close()
 
         dic2['vid'] = videoID
-        dic2['name'] = name_list
-        dic2['game'] = game_list
         dic2['commenter'] = commenter
         dic2['time'] = time_stamp
         dic2['comment'] = comment_list
+        dic2['name'] = name_list
+        dic2['game'] = game_list
         df2 = DataFrame(data = dic2)
         df2.drop_duplicates(subset = None, inplace = True)
 

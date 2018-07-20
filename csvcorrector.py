@@ -22,8 +22,8 @@ for file in glob.glob("*.csv"):
             all = []
             if(file.count('_')>4):
                 n = find_nth(file,'_',2)
-                first_part = str[:n]
-                last_part = str[n+1:]
+                first_part = file[:n]
+                last_part = file[n+1:]
                 file = first_part + last_part
             vid,name,game,comments=file.split("_")
             row = next(reader)
